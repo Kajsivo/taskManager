@@ -1,4 +1,4 @@
-package taskManager.Entity;
+package taskManager.entity;
 
 import javax.persistence.*;
 
