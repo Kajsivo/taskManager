@@ -2,6 +2,7 @@ package taskManager.entity;
 
 import javax.persistence.*;
 
+@Table
 @Entity
 public class Task {
 
