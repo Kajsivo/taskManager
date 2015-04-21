@@ -1,5 +1,7 @@
 package taskManager.entity;
 
+import com.fasterxml.jackson.annotation.JsonProperty;
+
 import javax.persistence.*;
 
 @Table
@@ -11,11 +13,14 @@ public class Task {
     private long id;
 
     @Column(nullable = false)
-    private String title;
+    @JsonProperty("title")
+    public String title;
 
     @Column(nullable = false)
-    private String assignee;
+    @JsonProperty("assignee")
+    public String assignee;
 
     @Column(nullable = false)
-    private String description;
+    @JsonProperty("description")
+    public String description;
 }
