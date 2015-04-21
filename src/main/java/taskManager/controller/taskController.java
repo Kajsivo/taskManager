@@ -3,10 +3,7 @@ package taskManager.controller;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestMethod;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 import taskManager.entity.Task;
 import taskManager.repository.TaskRepository;
 
@@ -22,5 +19,10 @@ public class taskController {
     public HttpStatus create(@RequestBody Task requestEntity) {
         taskRepository.save(requestEntity);
         return HttpStatus.OK;
+    }
+
+    @RequestMapping(value="/{id}", method = RequestMethod.GET, produces = "application/json")
+    public Task find(@PathVariable long id) {
+        return taskRepository.findOne(id);
     }
 }
