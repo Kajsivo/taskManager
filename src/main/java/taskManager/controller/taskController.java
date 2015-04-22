@@ -19,7 +19,7 @@ public class taskController {
     private TaskRepository taskRepository;
 
     @RequestMapping(value="/", method = RequestMethod.POST, consumes = "application/json")
-    public HttpStatus create(@RequestBody Task requestEntity) {
+    public HttpStatus create(@RequestBody Task requestEntity) throws UnsupportedOperationException{
         Task task = new Task();
         try {
             task = taskRepository.save(requestEntity);
