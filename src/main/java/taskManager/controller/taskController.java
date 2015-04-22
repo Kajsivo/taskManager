@@ -18,8 +18,8 @@ public class taskController {
     @Autowired
     private TaskRepository taskRepository;
 
-    @RequestMapping(value="/", method = RequestMethod.POST, consumes = "application/json")
-    public HttpStatus create(@RequestBody Task requestEntity) throws UnsupportedOperationException{
+    @RequestMapping(value = "/", method = RequestMethod.POST, consumes = "application/json")
+    public HttpStatus create(@RequestBody Task requestEntity) throws UnsupportedOperationException {
         try {
             taskRepository.save(requestEntity);
         } catch (Exception e) {
@@ -28,14 +28,24 @@ public class taskController {
         return HttpStatus.OK;
     }
 
-    @RequestMapping(value="/{id}", method = RequestMethod.GET, produces = "application/json")
+    @RequestMapping(value = "/{id}", method = RequestMethod.GET, produces = "application/json")
     public Task find(@PathVariable long id) throws NotFoundException {
         Task task = taskRepository.findOne(id);
-        if(task != null) {
+        if (task != null) {
             return task;
         } else {
             throw new NotFoundException("Task not found");
         }
+    }
+
+    @RequestMapping(value = "/delete/{id}", method = RequestMethod.DELETE)
+    public HttpStatus delete(@PathVariable long id) throws NotFoundException {
+        try {
+            taskRepository.delete(id);
+        } catch (Exception e) {
+            throw new NotFoundException("Task not found");
+        }
+        return HttpStatus.OK;
 
     }
 
