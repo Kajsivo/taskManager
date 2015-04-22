@@ -35,7 +35,7 @@ public class taskController {
         if(task != null) {
             return task;
         } else {
-            throw new NotFoundException("TASK NOT FOUND");
+            throw new NotFoundException("Task not found");
         }
 
     }
