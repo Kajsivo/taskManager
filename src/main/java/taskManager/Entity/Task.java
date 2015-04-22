@@ -13,14 +13,11 @@ public class Task {
     private long id;
 
     @Column(nullable = false)
-    @JsonProperty("title")
     public String title;
 
     @Column(nullable = false)
-    @JsonProperty("assignee")
     public String assignee;
 
     @Column(nullable = false)
-    @JsonProperty("description")
     public String description;
 }
