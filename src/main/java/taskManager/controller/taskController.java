@@ -9,6 +9,8 @@ import org.springframework.web.bind.annotation.*;
 import taskManager.entity.Task;
 import taskManager.repository.TaskRepository;
 
+import javax.validation.constraints.NotNull;
+
 
 @RestController
 @RequestMapping("/tasks")
@@ -18,17 +20,17 @@ public class taskController {
     private TaskRepository taskRepository;
 
     @RequestMapping(value = "/", method = RequestMethod.POST, consumes = "application/json")
-    public HttpStatus create(@RequestBody Task requestEntity) throws UnsupportedOperationException {
+    public ResponseEntity save(@RequestBody Task requestEntity) throws UnsupportedOperationException {
         try {
-            taskRepository.save(requestEntity);
+            Task task = taskRepository.save(requestEntity);
+            return ResponseEntity.ok().body(task.id);
         } catch (Exception e) {
             throw new UnsupportedOperationException("Something went wrong");
         }
-        return HttpStatus.OK;
     }
 
     @RequestMapping(value = "/{id}", method = RequestMethod.GET, produces = "application/json")
-    public Task find(@PathVariable long id) throws NotFoundException {
+    public Task find(@PathVariable @NotNull long id) throws NotFoundException {
         Task task = taskRepository.findOne(id);
         if (task != null) {
             return task;
@@ -37,14 +39,28 @@ public class taskController {
         }
     }
 
-    @RequestMapping(value = "/delete/{id}", method = RequestMethod.DELETE)
-    public HttpStatus delete(@PathVariable long id) throws NotFoundException {
+    @RequestMapping(value = "/{id}", method = RequestMethod.DELETE)
+    public HttpStatus delete(@PathVariable @NotNull long id) throws NotFoundException {
         try {
             taskRepository.delete(id);
+            return HttpStatus.OK;
         } catch (Exception e) {
             throw new NotFoundException("Task not found");
         }
-        return HttpStatus.OK;
+
+    }
+
+    @RequestMapping(value = "/{id}", method = RequestMethod.PUT)
+    public HttpStatus update(@PathVariable @NotNull long id, @RequestBody Task requestEntity) throws NotFoundException {
+        try {
+            Task task = taskRepository.findOne(id);
+            task.title = requestEntity.title;
+            task.description = requestEntity.description;
+            taskRepository.save(task);
+            return HttpStatus.OK;
+        } catch (Exception e) {
+            throw new NotFoundException("Task not found");
+        }
 
     }
 
