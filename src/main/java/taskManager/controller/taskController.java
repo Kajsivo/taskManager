@@ -6,11 +6,14 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
-import taskManager.dto.changeAssigneeDto;
+import taskManager.dto.multiChangeDto;
 import taskManager.entity.Task;
 import taskManager.repository.TaskRepository;
+import taskManager.type.TaskPriority;
+import taskManager.type.TaskStatus;
 
 import javax.validation.constraints.NotNull;
+import java.lang.reflect.Field;
 import java.util.List;
 
 
@@ -68,16 +71,35 @@ public class taskController {
 
     }
 
-    @RequestMapping(value="/changeAssignee/", method = RequestMethod.POST)
-    public HttpStatus changeAssignee(@RequestBody changeAssigneeDto requestEntity) throws NotFoundException
+    @RequestMapping(value="/multiChange/", method = RequestMethod.POST)
+    public HttpStatus multiChange(@RequestBody multiChangeDto requestEntity) throws NotFoundException
     {
         try {
             List<Long> tasksIds = requestEntity.getTasksIds();
-            String assignee = requestEntity.getAssignee();
+            String fieldToChange = requestEntity.getFieldToChange();
+
             tasksIds.forEach((taskId) -> {
-                Task task = taskRepository.findOne(taskId);
-                task.assignee = assignee;
-                taskRepository.save(task);
+
+                try {
+                    Field field = Task.class.getField(fieldToChange);
+                    Task task = taskRepository.findOne(taskId);
+                    switch (fieldToChange) {
+                        case "status":
+                            field.set(task, TaskStatus.valueOf(requestEntity.getNewValue()));
+                            break;
+                        case "priority":
+                            field.set(task, TaskPriority.valueOf(requestEntity.getNewValue()));
+                            break;
+                        default:
+                            field.set(task, requestEntity.getNewValue());
+                    }
+                    taskRepository.save(task);
+                } catch (NoSuchFieldException e) {
+                    e.printStackTrace();
+                } catch (IllegalAccessException e) {
+                    e.printStackTrace();
+                }
+
             });
             return HttpStatus.OK;
         } catch (Exception e) {
