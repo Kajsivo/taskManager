@@ -6,10 +6,12 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+import taskManager.dto.changeAssigneeDto;
 import taskManager.entity.Task;
 import taskManager.repository.TaskRepository;
 
 import javax.validation.constraints.NotNull;
+import java.util.List;
 
 
 @RestController
@@ -20,7 +22,8 @@ public class taskController {
     private TaskRepository taskRepository;
 
     @RequestMapping(value = "/", method = RequestMethod.POST, consumes = "application/json")
-    public ResponseEntity save(@RequestBody Task requestEntity) throws UnsupportedOperationException {
+    public ResponseEntity save(@RequestBody Task requestEntity) throws UnsupportedOperationException
+    {
         try {
             Task task = taskRepository.save(requestEntity);
             return ResponseEntity.ok().body(task.id);
@@ -30,7 +33,8 @@ public class taskController {
     }
 
     @RequestMapping(value = "/{id}", method = RequestMethod.GET, produces = "application/json")
-    public Task find(@PathVariable @NotNull long id) throws NotFoundException {
+    public Task find(@PathVariable @NotNull long id) throws NotFoundException
+    {
         Task task = taskRepository.findOne(id);
         if (task != null) {
             return task;
@@ -40,7 +44,8 @@ public class taskController {
     }
 
     @RequestMapping(value = "/{id}", method = RequestMethod.DELETE)
-    public HttpStatus delete(@PathVariable @NotNull long id) throws NotFoundException {
+    public HttpStatus delete(@PathVariable @NotNull long id) throws NotFoundException
+    {
         try {
             taskRepository.delete(id);
             return HttpStatus.OK;
@@ -51,7 +56,8 @@ public class taskController {
     }
 
     @RequestMapping(value = "/{id}", method = RequestMethod.PUT)
-    public HttpStatus update(@PathVariable @NotNull long id, @RequestBody Task requestEntity) throws NotFoundException {
+    public HttpStatus update(@PathVariable @NotNull long id, @RequestBody Task requestEntity) throws NotFoundException
+    {
         try {
             Task task = taskRepository.findOne(id);
             task.title = requestEntity.title;
@@ -64,13 +70,33 @@ public class taskController {
 
     }
 
+    @RequestMapping(value="/changeAssignee/", method = RequestMethod.POST)
+    public HttpStatus changeAssignee(@RequestBody changeAssigneeDto requestEntity) throws NotFoundException
+    {
+        try {
+            List<Long> tasksIds = requestEntity.getTasksIds();
+            String assignee = requestEntity.getAssignee();
+            tasksIds.forEach((taskId) -> {
+                Task task = taskRepository.findOne(taskId);
+                task.assignee = assignee;
+                taskRepository.save(task);
+            });
+            return HttpStatus.OK;
+        } catch (Exception e) {
+            throw new NotFoundException("Task not found");
+        }
+
+    }
+
     @ExceptionHandler(NotFoundException.class)
-    public ResponseEntity handleNotFoundException(NotFoundException ex) {
+    public ResponseEntity handleNotFoundException(NotFoundException ex)
+    {
         return ResponseEntity.status(HttpStatus.NOT_FOUND).body(ex.getMessage());
     }
 
     @ExceptionHandler(UnsupportedOperationException.class)
-    public ResponseEntity handleUnsupportedOperationException(UnsupportedOperationException ex) {
+    public ResponseEntity handleUnsupportedOperationException(UnsupportedOperationException ex)
+    {
         return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(ex.getMessage());
     }
 }
