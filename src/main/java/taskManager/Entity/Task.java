@@ -1,6 +1,7 @@
 package taskManager.entity;
 
-import com.fasterxml.jackson.annotation.JsonProperty;
+import taskManager.type.TaskPriority;
+import taskManager.type.TaskStatus;
 
 import javax.persistence.*;
 
@@ -20,4 +21,10 @@ public class Task {
 
     @Column(nullable = false)
     public String description;
+
+    @Column(nullable = false)
+    public TaskStatus status;
+
+    @Column(nullable = false)
+    public TaskPriority priority;
 }

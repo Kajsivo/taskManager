@@ -59,10 +59,8 @@ public class taskController {
     public HttpStatus update(@PathVariable @NotNull long id, @RequestBody Task requestEntity) throws NotFoundException
     {
         try {
-            Task task = taskRepository.findOne(id);
-            task.title = requestEntity.title;
-            task.description = requestEntity.description;
-            taskRepository.save(task);
+            requestEntity.id = id;
+            taskRepository.save(requestEntity);
             return HttpStatus.OK;
         } catch (Exception e) {
             throw new NotFoundException("Task not found");
