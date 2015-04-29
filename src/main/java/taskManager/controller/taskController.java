@@ -110,17 +110,19 @@ public class taskController {
     }
 
     public void multiChangeStatusValue(List<Long> tasksIds, String newValue) {
+        TaskStatus newStatus = TaskStatus.valueOf(newValue);
         tasksIds.forEach((taskId) -> {
             Task task = taskRepository.findOne(taskId);
-            task.status = TaskStatus.valueOf(newValue);
+            task.status = newStatus;
             taskRepository.save(task);
         });
     }
 
     public void multiChangePriorityValue(List<Long> tasksIds, String newValue) {
+        TaskPriority newPriority = TaskPriority.valueOf(newValue);
         tasksIds.forEach((taskId) -> {
             Task task = taskRepository.findOne(taskId);
-            task.priority = TaskPriority.valueOf(newValue);
+            task.priority = newPriority;
             taskRepository.save(task);
         });
     }
