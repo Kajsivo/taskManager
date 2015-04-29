@@ -134,11 +134,10 @@ public class taskController {
                 Field field = Task.class.getField(fieldToChange);
                 field.set(task, newValue);
                 taskRepository.save(task);
-            } catch (IllegalAccessException e) {
+            } catch (IllegalAccessException | NoSuchFieldException e) {
                 e.printStackTrace();
-            } catch (NoSuchFieldException e) {
-                e.printStackTrace();
-            } {
+            }
+            {
 
             }
         });
