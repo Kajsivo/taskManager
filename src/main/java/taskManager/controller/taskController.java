@@ -77,30 +77,19 @@ public class taskController {
         try {
             List<Long> tasksIds = requestEntity.getTasksIds();
             String fieldToChange = requestEntity.getFieldToChange();
+            String newValue = requestEntity.getNewValue();
 
-            tasksIds.forEach((taskId) -> {
+            switch (fieldToChange){
+                case "status":
+                    multiChangeStatusValue(tasksIds, newValue);
+                    break;
+                case "priority":
+                    multiChangePriorityValue(tasksIds, newValue);
+                    break;
+                default:
+                    multiChangeStringValue(tasksIds, newValue, fieldToChange);
+            }
 
-                try {
-                    Field field = Task.class.getField(fieldToChange);
-                    Task task = taskRepository.findOne(taskId);
-                    switch (fieldToChange) {
-                        case "status":
-                            field.set(task, TaskStatus.valueOf(requestEntity.getNewValue()));
-                            break;
-                        case "priority":
-                            field.set(task, TaskPriority.valueOf(requestEntity.getNewValue()));
-                            break;
-                        default:
-                            field.set(task, requestEntity.getNewValue());
-                    }
-                    taskRepository.save(task);
-                } catch (NoSuchFieldException e) {
-                    e.printStackTrace();
-                } catch (IllegalAccessException e) {
-                    e.printStackTrace();
-                }
-
-            });
             return HttpStatus.OK;
         } catch (Exception e) {
             throw new NotFoundException("Task not found");
@@ -118,5 +107,38 @@ public class taskController {
     public ResponseEntity handleUnsupportedOperationException(UnsupportedOperationException ex)
     {
         return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(ex.getMessage());
+    }
+
+    public void multiChangeStatusValue(List<Long> tasksIds, String newValue) {
+        tasksIds.forEach((taskId) -> {
+            Task task = taskRepository.findOne(taskId);
+            task.status = TaskStatus.valueOf(newValue);
+            taskRepository.save(task);
+        });
+    }
+
+    public void multiChangePriorityValue(List<Long> tasksIds, String newValue) {
+        tasksIds.forEach((taskId) -> {
+            Task task = taskRepository.findOne(taskId);
+            task.priority = TaskPriority.valueOf(newValue);
+            taskRepository.save(task);
+        });
+    }
+
+    public void multiChangeStringValue(List<Long> tasksIds, String newValue, String fieldToChange) {
+        tasksIds.forEach((taskId) -> {
+            try {
+                Task task = taskRepository.findOne(taskId);
+                Field field = Task.class.getField(fieldToChange);
+                field.set(task, newValue);
+                taskRepository.save(task);
+            } catch (IllegalAccessException e) {
+                e.printStackTrace();
+            } catch (NoSuchFieldException e) {
+                e.printStackTrace();
+            } {
+
+            }
+        });
     }
 }
