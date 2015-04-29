@@ -46,6 +46,17 @@ public class taskController {
         }
     }
 
+    @RequestMapping(value = "assignee/{assigneeId}", method = RequestMethod.GET, produces = "application/json")
+    public List findListForAssignee(@PathVariable @NotNull String assigneeId) throws NotFoundException
+    {
+        List<Long> tasksList = taskRepository.findIdsByAssignee(assigneeId);
+        if (tasksList != null) {
+            return tasksList;
+        } else {
+            throw new NotFoundException("Task not found");
+        }
+    }
+
     @RequestMapping(value = "/{id}", method = RequestMethod.DELETE)
     public HttpStatus delete(@PathVariable @NotNull long id) throws NotFoundException
     {
