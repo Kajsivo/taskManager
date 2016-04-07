@@ -1,4 +1,4 @@
-package taskManager.dto;
+package taskManager.entity;
 
 import java.util.List;
 

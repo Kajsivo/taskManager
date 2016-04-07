@@ -6,8 +6,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
-import taskManager.dto.multiChangeDto;
-import taskManager.entity.Task;
+import taskManager.entity.MultiChange;
+import taskManager.dto.TaskDto;
 import taskManager.repository.TaskRepository;
 import taskManager.type.TaskPriority;
 import taskManager.type.TaskStatus;
@@ -19,30 +19,30 @@ import java.util.List;
 
 @RestController
 @RequestMapping("/tasks")
-public class taskController {
+public class TaskController {
 
     @Autowired
     private TaskRepository taskRepository;
 
     @RequestMapping(value = "/", method = RequestMethod.POST, consumes = "application/json")
-    public ResponseEntity save(@RequestBody Task requestEntity) throws UnsupportedOperationException
+    public ResponseEntity save(@RequestBody TaskDto requestEntity) throws UnsupportedOperationException
     {
         try {
-            Task task = taskRepository.save(requestEntity);
-            return ResponseEntity.ok().body(task.id);
+            TaskDto taskDto = taskRepository.save(requestEntity);
+            return ResponseEntity.ok().body(taskDto.id);
         } catch (Exception e) {
             throw new UnsupportedOperationException("Something went wrong");
         }
     }
 
     @RequestMapping(value = "/{id}", method = RequestMethod.GET, produces = "application/json")
-    public Task find(@PathVariable @NotNull long id) throws NotFoundException
+    public TaskDto find(@PathVariable @NotNull long id) throws NotFoundException
     {
-        Task task = taskRepository.findOne(id);
-        if (task != null) {
-            return task;
+        TaskDto taskDto = taskRepository.findOne(id);
+        if (taskDto != null) {
+            return taskDto;
         } else {
-            throw new NotFoundException("Task not found");
+            throw new NotFoundException("TaskDto not found");
         }
     }
 
@@ -53,7 +53,7 @@ public class taskController {
         if (tasksList != null) {
             return tasksList;
         } else {
-            throw new NotFoundException("Task not found");
+            throw new NotFoundException("TaskDto not found");
         }
     }
 
@@ -64,26 +64,26 @@ public class taskController {
             taskRepository.delete(id);
             return HttpStatus.OK;
         } catch (Exception e) {
-            throw new NotFoundException("Task not found");
+            throw new NotFoundException("TaskDto not found");
         }
 
     }
 
     @RequestMapping(value = "/{id}", method = RequestMethod.PUT)
-    public HttpStatus update(@PathVariable @NotNull long id, @RequestBody Task requestEntity) throws NotFoundException
+    public HttpStatus update(@PathVariable @NotNull long id, @RequestBody TaskDto requestEntity) throws NotFoundException
     {
         try {
             requestEntity.id = id;
             taskRepository.save(requestEntity);
             return HttpStatus.OK;
         } catch (Exception e) {
-            throw new NotFoundException("Task not found");
+            throw new NotFoundException("TaskDto not found");
         }
 
     }
 
     @RequestMapping(value="/multiChange/", method = RequestMethod.POST)
-    public HttpStatus multiChange(@RequestBody multiChangeDto requestEntity) throws NotFoundException
+    public HttpStatus multiChange(@RequestBody MultiChange requestEntity) throws NotFoundException
     {
         try {
             List<Long> tasksIds = requestEntity.getTasksIds();
@@ -103,7 +103,7 @@ public class taskController {
 
             return HttpStatus.OK;
         } catch (Exception e) {
-            throw new NotFoundException("Task not found");
+            throw new NotFoundException("TaskDto not found");
         }
 
     }
@@ -123,28 +123,28 @@ public class taskController {
     public void multiChangeStatusValue(List<Long> tasksIds, String newValue) {
         TaskStatus newStatus = TaskStatus.valueOf(newValue);
         tasksIds.forEach((taskId) -> {
-            Task task = taskRepository.findOne(taskId);
-            task.status = newStatus;
-            taskRepository.save(task);
+            TaskDto taskDto = taskRepository.findOne(taskId);
+            taskDto.status = newStatus;
+            taskRepository.save(taskDto);
         });
     }
 
     public void multiChangePriorityValue(List<Long> tasksIds, String newValue) {
         TaskPriority newPriority = TaskPriority.valueOf(newValue);
         tasksIds.forEach((taskId) -> {
-            Task task = taskRepository.findOne(taskId);
-            task.priority = newPriority;
-            taskRepository.save(task);
+            TaskDto taskDto = taskRepository.findOne(taskId);
+            taskDto.priority = newPriority;
+            taskRepository.save(taskDto);
         });
     }
 
     public void multiChangeStringValue(List<Long> tasksIds, String newValue, String fieldToChange) {
         tasksIds.forEach((taskId) -> {
             try {
-                Task task = taskRepository.findOne(taskId);
-                Field field = Task.class.getField(fieldToChange);
-                field.set(task, newValue);
-                taskRepository.save(task);
+                TaskDto taskDto = taskRepository.findOne(taskId);
+                Field field = TaskDto.class.getField(fieldToChange);
+                field.set(taskDto, newValue);
+                taskRepository.save(taskDto);
             } catch (IllegalAccessException | NoSuchFieldException e) {
                 e.printStackTrace();
             }
