@@ -2,6 +2,7 @@ package taskManager.service;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import taskManager.api.exception.FieldNotFoundException;
 import taskManager.entity.MultiChange;
 import taskManager.entity.Task;
 import taskManager.repository.TaskRepository;
@@ -56,10 +57,7 @@ public class TaskService {
                 field.set(task, newValue);
                 taskRepository.save(task);
             } catch (IllegalAccessException | NoSuchFieldException e) {
-                e.printStackTrace();
-            }
-            {
-
+                throw new FieldNotFoundException("No such field: \" " + fieldToChange + " \"");
             }
         });
     }

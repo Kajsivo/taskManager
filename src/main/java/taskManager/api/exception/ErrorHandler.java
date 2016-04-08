@@ -15,11 +15,16 @@ public class ErrorHandler {
         return ResponseEntity.status(HttpStatus.NOT_FOUND).body(ex.getMessage());
     }
 
-
     @ExceptionHandler(Exception.class)
     public ResponseEntity handleUnsupportedOperationException(Exception ex)
     {
         return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(ex.getMessage());
+    }
+
+    @ExceptionHandler(FieldNotFoundException.class)
+    public ResponseEntity handleFieldNotFoundException(FieldNotFoundException ex)
+    {
+        return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(ex.getMessage());
     }
 
 
