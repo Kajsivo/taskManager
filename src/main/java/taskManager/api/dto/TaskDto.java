@@ -1,11 +1,11 @@
-package taskManager.dto;
+package taskManager.api.dto;
 
 import taskManager.type.TaskPriority;
 import taskManager.type.TaskStatus;
 
 public class TaskDto {
 
-    public long id;
+    public String id;
 
     public String title;
 

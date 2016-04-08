@@ -17,8 +17,8 @@ public class TaskService {
     @Autowired
     private TaskRepository taskRepository;
 
-    public void multiChange(List<Long> tasksIds, String newValue, String fieldToChange) {
-        switch (fieldToChange){
+    public void multiChange(List<String> tasksIds, String newValue, String fieldToChange) {
+        switch (fieldToChange) {
             case MultiChange.STATUS:
                 multiChangeStatusValue(tasksIds, newValue);
                 break;
@@ -30,7 +30,7 @@ public class TaskService {
         }
     }
 
-    public void multiChangeStatusValue(List<Long> tasksIds, String newValue) {
+    public void multiChangeStatusValue(List<String> tasksIds, String newValue) {
         TaskStatus newStatus = TaskStatus.valueOf(newValue);
         tasksIds.forEach((taskId) -> {
             Task task = taskRepository.findOne(taskId);
@@ -39,7 +39,7 @@ public class TaskService {
         });
     }
 
-    public void multiChangePriorityValue(List<Long> tasksIds, String newValue) {
+    public void multiChangePriorityValue(List<String> tasksIds, String newValue) {
         TaskPriority newPriority = TaskPriority.valueOf(newValue);
         tasksIds.forEach((taskId) -> {
             Task task = taskRepository.findOne(taskId);
@@ -48,7 +48,7 @@ public class TaskService {
         });
     }
 
-    public void multiChangeStringValue(List<Long> tasksIds, String newValue, String fieldToChange) {
+    public void multiChangeStringValue(List<String> tasksIds, String newValue, String fieldToChange) {
         tasksIds.forEach((taskId) -> {
             try {
                 Task task = taskRepository.findOne(taskId);

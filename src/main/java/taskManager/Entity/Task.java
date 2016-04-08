@@ -9,9 +9,8 @@ import javax.persistence.*;
 @Entity
 public class Task {
 
-    @Id
-    @GeneratedValue(strategy = GenerationType.AUTO)
-    public long id;
+    @Column(nullable = false)
+    public String id;
 
     @Column(nullable = false)
     public String title;

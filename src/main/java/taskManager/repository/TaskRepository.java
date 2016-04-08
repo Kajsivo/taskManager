@@ -9,8 +9,8 @@ import taskManager.entity.Task;
 import java.util.List;
 
 @Repository
-public interface TaskRepository extends JpaRepository<Task, Long> {
+public interface TaskRepository extends JpaRepository<Task, String> {
 
     @Query(value = "SELECT id FROM task WHERE assignee = :assignee", nativeQuery = true)
-    List<Long> findIdsByAssignee(@Param("assignee") String assignee);
+    List<String> findIdsByAssignee(@Param("assignee") String assignee);
 }
