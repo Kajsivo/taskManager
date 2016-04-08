@@ -9,6 +9,7 @@ import javax.persistence.*;
 @Entity
 public class Task {
 
+    @Id
     @Column(nullable = false)
     public String id;
 
@@ -22,8 +23,10 @@ public class Task {
     public String description;
 
     @Column(nullable = false)
+    @Enumerated(EnumType.STRING)
     public TaskStatus status;
 
     @Column(nullable = false)
+    @Enumerated(EnumType.STRING)
     public TaskPriority priority;
 }

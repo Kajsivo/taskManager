@@ -57,7 +57,7 @@ public class TaskService {
                 field.set(task, newValue);
                 taskRepository.save(task);
             } catch (IllegalAccessException | NoSuchFieldException e) {
-                throw new FieldNotFoundException("No such field: \" " + fieldToChange + " \"");
+                throw new FieldNotFoundException(fieldToChange);
             }
         });
     }
