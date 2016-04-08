@@ -10,7 +10,7 @@ import javax.persistence.*;
 public class Task {
 
     @Id
-    @Column(nullable = false)
+    @Column(nullable = false, insertable = true, updatable = false)
     public String id;
 
     @Column(nullable = false)
